@@ -1,4 +1,4 @@
-# Developer Events Bot
+# PVC Locator Bot
 Code Repository for the PVC Locator Chatbot on Facebook Messenger
 
 [Talk to Bot on Messenger](http://m.me/PVC-Locator-241883096568910/)
