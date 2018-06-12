@@ -3,7 +3,7 @@ const querystring = require("querystring");
 
 module.exports = class Messenger {
   constructor (token, notificationType) {
-    this.token = token || process.env.PAGE_TOKEN
+    this.token = token
     this.notificationType = notificationType || 'REGULAR'
   }
 
@@ -18,23 +18,12 @@ module.exports = class Messenger {
     this.sendMessage(id, messageData, notificationType, cb)
   }
 
-  sendImageMessage (id, payload, notificationType, cb) {
+  sendImageMessage (id, imageURL, notificationType, cb) {
     const messageData = {
       'attachment': {
         'type': 'image',
-        'payload': typeof payload === 'object' ? payload : { 'url': payload }
-      }
-    }
-    this.sendMessage(id, messageData, notificationType, cb)
-  }
-
-  sendFileMessage (id, fileURL, notificationType, cb) {
-    const messageData = {
-      'attachment': {
-        'type': 'file',
         'payload': {
-          'url': fileURL,
-          'is_reusable': true
+          'url': imageURL
         }
       }
     }
@@ -108,7 +97,6 @@ module.exports = class Messenger {
     }
 
     const json = {
-      messaging_type: "RESPONSE",
       recipient: {
         id: id
       }
@@ -136,7 +124,7 @@ module.exports = class Messenger {
   getProfile (id, cb) {
     const uri = `https://graph.facebook.com/v3.0/${id}`;
     const qs = {
-      fields: 'first_name,last_name,gender,locale',
+      fields: 'first_name,last_name,gender',
       access_token: this.token
     }
     const req = {
@@ -148,32 +136,11 @@ module.exports = class Messenger {
     sendRequest(uri, qs, req, cb)
   }
 
-  setGetStarted (cb) {
-    const jsonObject = { 
-      "get_started": {
-        "payload":"GeneralΩGet Started"
-      }
-    }
-    this.setMessengerProfile(jsonObject, cb)
-  }
-
-  setGreetingText (greetings, cb) {
-    const jsonObject = {
-      greeting: greetings
-    }
-    this.setMessengerProfile(jsonObject, cb)
-  }
-
-  setPersistentMenu (menu, cb) {
-    const jsonObject = {
-      "persistent_menu": menu
-    }
-    this.setMessengerProfile(jsonObject, cb)
-  }
-
   setMessengerProfile (jsonObject, cb) {
-    const uri = "https://graph.facebook.com/v3.0/me/messenger_profile";
-    const qs = { access_token: this.token }
+    const uri = `https://graph.facebook.com/v3.0/me/messenger_profile`;
+    const qs = {
+      access_token: this.token
+    }
     const req = {
       method: 'POST',
       headers: {
@@ -183,58 +150,6 @@ module.exports = class Messenger {
     }
     sendRequest(uri, qs, req, (err, body) => console.log(body))
   }
-
-  psidRetrieval(token, cb) {
-    const uri = "https://graph.facebook.com/v3.0/me"
-    const qs = { 
-      access_token: this.token, 
-      fields: 'recipient', 
-      account_linking_token: token 
-    }
-    
-    const req = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-    sendRequest(uri, qs, req, cb)
-  }
-
-  attachmentUpload(img_uri, cb) {
-    const uri = "https://graph.facebook.com/v3.0/me/message_attachments"  
-    const qs = { access_token: this.token }  
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        "message": {
-        "attachment": {
-          "type": "image", 
-          "payload": {
-            "is_reusable": true,
-            "url": img_uri
-          }
-        }
-      }})
-    }
-    sendRequest(uri, qs, req, cb) 
-  }
-  
-  generateParametricCode (jsonObject, cb) {
-    const uri = "https://graph.facebook.com/v3.0/me/messenger_codes";
-    const qs = { access_token: this.token }
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(jsonObject)
-    }
-    sendRequest(uri, qs, req, cb)    
-  }
 }
 
 const sendRequest = (uri, qs, options, cb) => {
@@ -242,16 +157,9 @@ const sendRequest = (uri, qs, options, cb) => {
     .then(res => {
       return res.json();
     })
-    .then(json => { 
-      if (json.error) {
-        console.log(json)
-        if (cb) cb(json)
-      }
-      else if (cb) cb(null, json)  
+    .then(json => {
+      if (json.error) return console.log(json)
+      if (cb) cb(null, json)  
     }) 
-    .catch(err => {
-      console.log(err)
-      if (cb) cb(err) 
-    })
+    .catch(err => console.log(err))
 }
-

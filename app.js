@@ -39,7 +39,7 @@ app.get('/webhook', (req, res) => {
     req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
     res.send(req.query['hub.challenge']);
   } else {
-    console.log('Webhook verified')
+    console.log('Webhook not verified')
     res.sendStatus(400);
   }
 });
