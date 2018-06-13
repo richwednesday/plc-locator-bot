@@ -48,6 +48,8 @@ app.get('/webhook', (req, res) => {
 app.post('/webhook', function (req, res) {
   let data = req.body;
 
+  console.log(data)
+
   if (data.object == 'page') {    
     data.entry.forEach(function(pageEntry) {
       let pageID = pageEntry.id;

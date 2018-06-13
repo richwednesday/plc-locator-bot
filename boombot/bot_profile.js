@@ -20,7 +20,7 @@ BotProfile = {
 		  greeting: [
 		    {
 		      locale: 'default',
-		      text: "Welcome, {{user_first_name}}! You can get the nearest PVC Registration Centre to you in Nigeria." +
+		      text: "Welcome, {{user_first_name}}! You can get the nearest PVC Registration Centre to you in Nigeria. " +
 		      	"Click \"GET STARTED\" to begin." 
 		    },
 		    {
