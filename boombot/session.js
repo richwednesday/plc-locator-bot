@@ -18,5 +18,24 @@ module.exports = {
 			}
 			else cb(reply)
 		})
+	},
+
+	store(id, items) {
+		if (!items) return
+		client.set(`${id}-store`, JSON.stringify(items))
+	},
+
+	retrieve(id, cb) {
+		client.get(`${id}-store`, (err, reply) => {
+			if (err) {
+				console.log(err)
+				cb(null)
+			}
+			else cb(JSON.parse(reply))
+		})
+	},
+
+	delete(id) {
+		client.del(`${id}-store`)
 	}
 }

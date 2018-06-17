@@ -22,9 +22,11 @@ function messageTextHandler(id, message, nlp, state) {
   else if (state === "Step 1") commands.general(id, "What is a PVC")
   else if (state === "Step 2") commands.general(id, "Get your PVC")
 
-  else if (nlp.states) commands.search(id, "Location as State", nlp.states) 
+  else if (nlp.states && state === "Step 3") commands.search(id, "Location as State", nlp.states) 
   else if (state === "Step 3") commands.search(id, "Location as Text", message)  
-  
+
+  else if (nlp.number && state === "LGA Number") commands.search(id, "LGA Number", nlp.number) 
+
   else if (state === "Expecting Feedback") commands.feedback(id, "Received Feedback", message)
   else defaultText(id)
 }
