@@ -1,7 +1,6 @@
 'use strict'
 require('dotenv').config()
 
-const child_process = require("child_process");
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const express = require('express');
@@ -11,7 +10,7 @@ const Boombot = require('./boombot/boombot')
 // Can uncomment this code to set it
 // Boombot.BotProfile.enableGetStarted()
 // Boombot.BotProfile.setGreeting()
-// Boombot.PersistentMenu.enable()
+Boombot.PersistentMenu.enable()
 
 // Webserver parameter
 const PORT = process.env.PORT || 5000;
@@ -52,9 +51,6 @@ app.post('/webhook', function (req, res) {
 
   if (data.object == 'page') {    
     data.entry.forEach(function(pageEntry) {
-      let pageID = pageEntry.id;
-      let timeOfEvent = pageEntry.time;
-
       // Iterate over each messaging event
       pageEntry.messaging.forEach(function(messagingEvent) {
         if (messagingEvent.message) {

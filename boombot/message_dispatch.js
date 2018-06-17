@@ -1,25 +1,31 @@
 const commands = require('../commands/commands') 
 const PostbackFilter = require('./postback_dispatch').PostbackFilter
 
-const FBMessenger = require('../ui/messenger')
-const messenger = new FBMessenger(process.env.FB_PAGE_TOKEN)
-
-const store = require('./store')
+const session = require('./session')
 
 function defaultText(id) {
   console.log("default text")
-  let text = "I see what you're doing, I really want to help, but for now, I can only give you PVC centres."
-  messenger.sendQuickRepliesMessage(id, text, [{content_type: "location"}])
+  
 }
 
 function attachmentsHandler(id, attachments, state) {
-  if (attachments[0].payload.coordinates) commands.search.processCoordinates(id, attachments[0].payload.coordinates)
+  if (attachments[0].payload.coordinates) commands.search(id, "Location as Coordinates", attachments[0].payload.coordinates)
+  else if (state === "Step 1") commands.general(id, "What is a PVC")
+  else if (state === "Step 2") commands.general(id, "Get your PVC")
+  else if (state === "Expecting Feedback") commands.feedback(id, "Received Feedback")
   else defaultText(id)
 } 
 
-function messageTextHandler(id, message, state) {
-  if (message.toLowerCase() === "get started") commands.start(id, message)
-  else if (state === "Expecting user Feedback") commands.feedback.thankForFeedback(id)
+function messageTextHandler(id, message, nlp, state) {
+  if (message.toLowerCase() === "get started") commands.start(id)
+  
+  else if (state === "Step 1") commands.general(id, "What is a PVC")
+  else if (state === "Step 2") commands.general(id, "Get your PVC")
+
+  else if (nlp.states) commands.search(id, "Location as State", nlp.states) 
+  else if (state === "Step 3") commands.search(id, "Location as Text", message)  
+  
+  else if (state === "Expecting Feedback") commands.feedback(id, "Received Feedback", message)
   else defaultText(id)
 }
 
@@ -28,7 +34,6 @@ function MessageDispatch(event) {
 	const senderID = event.sender.id
   const message = event.message
 
-  console.log(`Received message for user ${senderID} with message: `)
   console.log(message)
 
   // You may get a text, attachment, or quick replies but not all three
@@ -42,13 +47,17 @@ function MessageDispatch(event) {
   }
 
   else if (messageAttachments) {
-    attachmentsHandler(senderID, messageAttachments);
+    session.getState(senderID, (state) => {
+      attachmentsHandler(senderID, messageAttachments, state);
+    })
   } 
   
   else if (messageText) {
-    // store.getState(senderID, (state) => {
-      messageTextHandler(senderID, messageText, null);
-    // })
+    session.getState(senderID, (state) => {
+      let nlp = message.nlp.entities || {}
+		
+      messageTextHandler(senderID, messageText, nlp, state);
+    })
   }
 }
 

@@ -2,6 +2,7 @@
 
 module.exports = {
 	feedback: require('./feedback'),
+	general: require('./general'),
 	search: require('./search'),
 	start: require('./start')
 }

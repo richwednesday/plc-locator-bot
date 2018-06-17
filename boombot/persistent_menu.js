@@ -13,8 +13,8 @@ PersistentMenu = {
           call_to_actions: [
             {
               type: 'postback',
-              title: '🔍 Find PVC Centre',
-              payload: 'Create'
+              title: 'Get Your PVC',
+              payload: 'Get your PVC'
             },
             {
               type: 'postback',

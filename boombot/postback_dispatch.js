@@ -14,41 +14,21 @@ function PostbackFilter(id, payload) {
 			commands.start(id)
 			break;
 
-		case "Search":
-			commands.search.getLocation(id)
+		case "What is a PVC":
+			commands.general(id, payload)
 			break; 
 
+		case "Get your PVC":
+			commands.general(id, payload)
+			break;
+
 		case "Feedback":
-			commands.feedback.askForFeedback(id)
+			commands.feedback(id, "Ask Feedback")
 			break;
 
 		default:
 			console.log(`payload ${payload} not from me`)
 			break;
-	}
-}
-
-function subFilter(id, payload) {
-	let newload = payload.split(",")
-			
-	switch (newload[0]) {
-		case "Geometry":
-			let coordinates = {lat: newload[1], long: newload[2]}
-			commands.search.processCoordinates(id, coordinates)
-			break;
-
-		case "More Events":
-			commands.search.processNextPage(id, newload[1])
-			break;
-
-		case "Topic":
-			commands.search.processTopic(id, newload[1])
-			break;
-
-		default:
-			console.log("Not finding the postback")
-
-
 	}
 }
 
