@@ -18,7 +18,7 @@ module.exports = function(id) {
       payload: 'What is a PVC'
     }]
     messenger.sendQuickRepliesMessage(id, "Good " + getGreetingTime(moment()) + res.first_name + ". You have " + getDateTillDeadline() +
-      " days left to get your PVC. Your PVC is your voice. I can help you find out how to get it right now.", elements)
+      " days left to get your PVC.\n\nYour PVC is your voice. I can help you find out how to get it.", elements)
     session.setState(id, "Step 1")
   })
 }

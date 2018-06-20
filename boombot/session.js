@@ -37,5 +37,15 @@ module.exports = {
 
 	delete(id) {
 		client.del(`${id}-store`)
+	},
+
+	getResponse(intent) {
+		client.get(intent, (err, reply) => {
+			if (err) {
+				console.log(err)
+				cb(null)
+			}
+			else cb(reply)
+		})
 	}
 }

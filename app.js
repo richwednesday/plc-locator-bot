@@ -10,7 +10,7 @@ const Boombot = require('./boombot/boombot')
 // Can uncomment this code to set it
 // Boombot.BotProfile.enableGetStarted()
 // Boombot.BotProfile.setGreeting()
-Boombot.PersistentMenu.enable()
+// Boombot.PersistentMenu.enable()
 
 // Webserver parameter
 const PORT = process.env.PORT || 5000;
@@ -52,15 +52,21 @@ app.post('/webhook', function (req, res) {
   if (data.object == 'page') {    
     data.entry.forEach(function(pageEntry) {
       // Iterate over each messaging event
-      pageEntry.messaging.forEach(function(messagingEvent) {
-        if (messagingEvent.message) {
-          Boombot.MessageDispatch(messagingEvent);
-        } else if (messagingEvent.postback) {
-          Boombot.PostbackDispatch(messagingEvent);
-        } else {
-          console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-        }
-      });
+      if (pageEntry.messaging) { 
+        pageEntry.messaging.forEach(function(messagingEvent) {
+          if (messagingEvent.message) {
+            Boombot.MessageDispatch(messagingEvent);
+          } else if (messagingEvent.postback) {
+            Boombot.PostbackDispatch(messagingEvent);
+          } else {
+            console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+          }
+        });
+      }
+      else if (pageEntry.standby) {
+        console.log(pageEntry.standby)
+        console.log("we on standby baby")
+      }
     });
 
     res.sendStatus(200);

@@ -1,15 +1,25 @@
 const commands = require('../commands/commands') 
 const PostbackFilter = require('./postback_dispatch').PostbackFilter
 
+const FBMessenger = require('../ui/messenger')
+const messenger = new FBMessenger(process.env.FB_PAGE_TOKEN)
+
 const session = require('./session')
 
-function defaultText(id) {
+function defaultText(id, message) {
   console.log("default text")
-  
+
+  // this is a very simple logic 
+  if (message.length < 5) commands.start(id)
+  else {
+    messenger.sendTextMessage(id, "I will forward your message to someone who can assist you. You will get a response shortly.")
+    messenger.passThreadControl(id, "263902037430900")
+  }
 }
 
 function attachmentsHandler(id, attachments, state) {
-  if (attachments[0].payload.coordinates) commands.search(id, "Location as Coordinates", attachments[0].payload.coordinates)
+  if (attachments[0].payload.coordinates) 
+    commands.search(id, "Location as Coordinates", [attachments[0].payload.coordinates.lat, attachments[0].payload.coordinates.long])
   else if (state === "Step 1") commands.general(id, "What is a PVC")
   else if (state === "Step 2") commands.general(id, "Get your PVC")
   else if (state === "Expecting Feedback") commands.feedback(id, "Received Feedback")
@@ -28,7 +38,14 @@ function messageTextHandler(id, message, nlp, state) {
   else if (nlp.number && state === "LGA Number") commands.search(id, "LGA Number", nlp.number) 
 
   else if (state === "Expecting Feedback") commands.feedback(id, "Received Feedback", message)
-  else defaultText(id)
+  
+  else if (nlp.intent) {
+    session.getResponse(nlp.intent[0].value, (reply) => {
+      reply ? messenger.sendTextMessage(id, reply) : defaultText(id, message)
+    }) 
+  }
+
+  else defaultText(id, message)
 }
 
 // Routing for messages

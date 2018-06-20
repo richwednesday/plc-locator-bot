@@ -150,6 +150,26 @@ module.exports = class Messenger {
     }
     sendRequest(uri, qs, req, (err, body) => console.log(body))
   }
+
+  passThreadControl(userPsid, targetAppId, cb) {
+    console.log('PASSING THREAD CONTROL')
+    const payload = {
+      recipient: {
+        id: userPsid
+      },
+      target_app_id: targetAppId
+    };
+    const graph_url = `https://graph.facebook.com/me/pass_thread_control`;
+    const qs = {access_token: this.token}
+    const req = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }
+    sendRequest(graph_url, qs, req, cb)
+  }
 }
 
 const sendRequest = (uri, qs, options, cb) => {
