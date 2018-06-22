@@ -6,6 +6,12 @@ const messenger = new FBMessenger(process.env.FB_PAGE_TOKEN)
 
 const session = require('./session')
 
+let yesReplies = ["yes", "yea", "yup", "ya", "yep", "totally", "totes", "yes please", "of course", "sure", "you bet", "for sure", 
+  "sure thing", "certainly", "definitely", "yeah", "yh", "yo", "absolutely", "undoubtedly", "aye"]
+let noReplies = ["no", "nope", "naa", "nah", "neh", "nay", "at all", "not at all", "negative", "Uhn Uhn", "no way", "nop"]
+
+
+
 function defaultText(id, message) {
   console.log("default text")
 
@@ -31,9 +37,14 @@ function messageTextHandler(id, message, nlp, state) {
   
   else if (state === "Step 1") commands.general(id, "What is a PVC")
   else if (state === "Step 2") commands.general(id, "Get your PVC")
+  else if (state === "Step 3") {
+    if (yesReplies.indexOf(message) >= 0) commands.general(id, "Yes Registered")
+    else if (noReplies.indexOf(message) >= 0) commands.general(id, "Not Registered")
+    else messenger.sendTextMessage(id, "Type Get started to begin again.") 
+  }
 
-  else if (nlp.states && state === "Step 3") commands.search(id, "Location as State", nlp.states) 
-  else if (state === "Step 3") commands.search(id, "Location as Text", message)  
+  else if (nlp.states && state === "Step 4") commands.search(id, "Location as State", nlp.states) 
+  else if (state === "Step 4") commands.search(id, "Location as Text", message)  
 
   else if (nlp.number && state === "LGA Number") commands.search(id, "LGA Number", nlp.number) 
 

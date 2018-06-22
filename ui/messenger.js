@@ -74,6 +74,19 @@ module.exports = class Messenger {
     this.sendMessage(id, messageData, notificationType, cb)
   }
 
+  sendFileMessage (id, fileURL, notificationType, cb) {
+    const messageData = {
+      'attachment': {
+        'type': 'file',
+        'payload': {
+          'url': fileURL,
+          'is_reusable': true
+        }
+      }
+    }
+    this.sendMessage(id, messageData, notificationType, cb)
+  }
+
   sendQuickRepliesMessage (id, attachment, quickReplies, notificationType, cb) {
     const attachmentType = (typeof attachment === 'string' ? 'text' : 'attachment')
     const attachmentObject = typeof attachment === 'string' ? attachment : {

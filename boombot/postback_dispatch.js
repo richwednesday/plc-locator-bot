@@ -16,11 +16,15 @@ function PostbackFilter(id, payload) {
 
 		case "What is a PVC":
 		case "Get your PVC":
+		case "Yes Registered":
+		case "Not Registered":
+		case "Moved Houses":
+		case "Lost PVC":
 			commands.general(id, payload)
 			break; 
 
 		case "Load More PVC":
-			commands.start(id, payload)
+			commands.search(id, payload)
 			break;
 
 		case "Feedback":
