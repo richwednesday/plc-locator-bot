@@ -68,7 +68,7 @@ function main(id, payload, details) {
       .then(json => {
         if (json.based === "lga") {
           messenger.sendTextMessage(id, `These are the registeration centres in ${json.locations[0].lga} Local Government, ${json.locations[0].state} State.`, () => {
-            sendScrollMessage(id, json.locations)
+            util.sendScrollMessage(id, json.locations)
           }) 
         }
         else {
@@ -125,9 +125,9 @@ let util = {
           payload: "Contribute"
         }]
       })
-      if (elements.length === 10) break;
+      if (elements.length === 9) break;
     }
-    if (json.locations.length > 10) {
+    if (locations.length > 9) {
       elements.push({
         title: "Load More Registration Centres in this Area.",
         image_url: "http://res.cloudinary.com/ubadj/image/upload/v1529652086/050AD750-ABBF-4AB0-A5AA-43BA06C87601.jpg",
@@ -137,7 +137,7 @@ let util = {
           payload: "Load More PVC"
         }]
       })
-      session.store(id, json.locations.slice(11))
+      session.store(id, locations.slice(9))
     }
     else session.delete(id)
 

@@ -27,9 +27,9 @@ module.exports = function(id, payload) {
 			"title": "No",
 			"payload": "Not Registered"
 		}]
-
-		let text = "Do you have a valid voter registration from 2011 or 2015?\n\nIf you have registered before, type Yes, else type No " +
-			"for a new registeration."
+		
+		//\n\nIf you have registered before, type Yes, else type No " +"for a new registeration.
+		let text = "Do you have a valid voter registration from 2011 or 2015?"
 		messenger.sendQuickRepliesMessage(id, text, elements, (err, reply) => {
 			if (reply) session.setState(id, "Step 3")
 		})
