@@ -6,9 +6,7 @@ const fetch = require('node-fetch');
 
 function main(id, payload, details) {
 	if (payload === "Location as State") {
-    // let available = ["LAGOS", "AKWA IBOM", "FCT"]
     let state = details[0].value
-    // if (available.indexOf(state) < 0) return messenger.sendTextMessage(id, "Sorry, your state is not yet available. Check back soon.")
      
     fetch(`${process.env.CORE_URL}/state/lga?state=${state}&masterKey=${process.env.CORE_API_KEY}`)
       .then(res => res.json())
@@ -26,6 +24,7 @@ function main(id, payload, details) {
       })
       .catch(err => {
         console.log(err)
+        util.sendErrorMessage(id)
       })
   }
 
@@ -40,17 +39,12 @@ function main(id, payload, details) {
         .then(res => res.json())
         .then(json => {
           messenger.sendTextMessage(id, `These are the registration centres for ${lga}, ${state} State.`, () => {
-            let text = "", i = 1;
-            for (let location of json.locations) {
-              text += `${i}. ${location.reg_area_centre}, (${location.reg_area})\n\n`
-              i++
-            }
-            messenger.sendTextMessage(id, text, () => extraInfo(id))
-            session.delete(id)
+            util.sendScrollMessage(id, json.locations)
           })
         })
         .catch(err => {
           console.log(err)
+          util.sendErrorMessage(id)
         })
     })
   }
@@ -59,7 +53,6 @@ function main(id, payload, details) {
     fetch(`https://maps.google.com/maps/api/geocode/json?address=${details}&key=${process.env.MAPS_KEY}`)
       .then(res => res.json())
       .then(json => {
-        console.log(json)
         let comp = json.results[0].address_components
         let comp_length = comp.length
         let geo = json.results[0].geometry.location
@@ -75,47 +68,85 @@ function main(id, payload, details) {
       .then(json => {
         if (json.based === "lga") {
           messenger.sendTextMessage(id, `These are the registeration centres in ${json.locations[0].lga} Local Government, ${json.locations[0].state} State.`, () => {
-            let text = "", i = 1;
-            for (let location of json.locations) {
-              text += `${i}. ${location.reg_area_centre}, (${location.reg_area})\n\n`
-              i++
-              if (i > 9) break  
-            }
-            messenger.sendTextMessage(id, text, () => extraInfo(id))
+            sendScrollMessage(id, json.locations)
           }) 
         }
         else {
           if (!json.locations.length) return messenger.sendTextMessage(id, "Sorry I could not get that. Can you type the State in Nigeria you are in.")
           
-          messenger.sendTextMessage(id, "These are the registration centres nearest to you.", () => {
-            let text = "", i = 1;
-            for (let location of json.locations) {
-              text += `${i}. ${location.reg_area_centre}, (${location.reg_area})\n\n`
-              i++
-            }
-            messenger.sendTextMessage(id, text, () => extraInfo(id))
+          messenger.sendTextMessage(id, "These are the registration centres near you.", () => {
+            util.sendScrollMessage(id, json.locations)
           })
         }
       })
       .catch(err => {
         console.log(err)
+        util.sendErrorMessage(id)
       })
+  }
+
+  else if (payload === "Load More PVC") {
+    session.retrieve(id, (res) => {
+      if (!res) return messenger.sendTextMessage(id, "Sorry, I could not find more data.")
+      console.log(res)
+
+      let elements = []
+      for (let location of res.locations) {
+        elements.push({
+          title: location.reg_area,
+          subtitle: location.reg_area_centre,
+          image_url: "http://res.cloudinary.com/ubadj/image/upload/v1529652086/050AD750-ABBF-4AB0-A5AA-43BA06C87601.jpg",
+          buttons: [{
+            type: "postback",
+            title: "Contribute",
+            payload: "Contribute"
+          }]
+        })
+        if (elements.length === 10) break;
+      }
+      messenger.sendHScrollMessage(id, elements)
+      session.delete(id)
+    })
   }
 }
 
-function extraInfo(id) {
-  messenger.sendTextMessage(id, "When going, carry documents that say who you are. Like an International Passport, Driver's Licence " +
-    "or Birth Certificate. (Not compulsory, but some INEC officials ask)", () => {
 
-    messenger.sendTextMessage(id, "When you're done, they'll give you a slip, a Temporary Voter's Card (TVC). " +
-      "That's what you'll collect your PVC with.", () => {
-
-      messenger.sendTextMessage(id, "Ask the INEC people when your PVC will be ready. \nWait and pray. It could take up to 6 months.", () => {
-        messenger.sendTextMessage(id, "If you have any question, enter it below. I will try my best to answer or contact someone to help you.")
+let util = {
+  sendScrollMessage(id, locations) {
+    let elements = []
+    for (let location of locations) {
+      elements.push({
+        title: location.reg_area,
+        subtitle: location.reg_area_centre,
+        image_url: "http://res.cloudinary.com/ubadj/image/upload/v1529652086/050AD750-ABBF-4AB0-A5AA-43BA06C87601.jpg",
+        buttons: [{
+          type: "postback",
+          title: "Contribute",
+          payload: "Contribute"
+        }]
       })
-    })  
-  })
-  session.setState(id, "Ready for Questions")
+      if (elements.length === 10) break;
+    }
+    if (json.locations.length > 10) {
+      elements.push({
+        title: "Load More Registration Centres in this Area.",
+        image_url: "http://res.cloudinary.com/ubadj/image/upload/v1529652086/050AD750-ABBF-4AB0-A5AA-43BA06C87601.jpg",
+        buttons: [{
+          type: "postback",
+          title: "Load More",
+          payload: "Load More PVC"
+        }]
+      })
+      session.store(id, json.locations.slice(11))
+    }
+    else session.delete(id)
+
+    messenger.sendHScrollMessage(id, elements)
+  },
+  
+  sendErrorMessage(id) {
+    messenger.sendTextMessage(id, "An Error occured displaying the information you requested. Please retry later.")
+  }
 }
 
 module.exports = main

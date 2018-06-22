@@ -15,11 +15,12 @@ function PostbackFilter(id, payload) {
 			break;
 
 		case "What is a PVC":
+		case "Get your PVC":
 			commands.general(id, payload)
 			break; 
 
-		case "Get your PVC":
-			commands.general(id, payload)
+		case "Load More PVC":
+			commands.start(id, payload)
 			break;
 
 		case "Feedback":

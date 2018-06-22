@@ -19,8 +19,16 @@ module.exports = function(id, payload) {
 
 	else if (payload === "Get your PVC") {
 		messenger.sendTextMessage(id, "NB: Registration days are Mondays to Fridays, 9am to 3pm. Public Holidays don't count.", () => {
-			messenger.sendQuickRepliesMessage(id, "Now let's get the nearest PVC Registration Center to you. Tell me your location by " +
-				"clicking the button below or simply type the state you're in.", [{content_type: "location"}])
+			messenger.sendTextMessage(id, "When going, carry documents that say who you are. Like an International Passport, Driver's Licence " +
+				"or Birth Certificate. (Not compulsory, but some INEC officials ask)", () => {
+
+				messenger.sendTextMessage(id, "When you're done, they'll give you a slip, a Temporary Voter's Card (TVC). " +
+					"That's what you'll collect your PVC with.", () => {
+
+					messenger.sendQuickRepliesMessage(id, "Now let's get the nearest PVC Registration Center to you. Tell me your location by " +
+						"clicking the button below or simply type the state you're in.", [{content_type: "location"}])
+				})
+			})
 		})
 		session.setState(id, "Step 3")
 	}
