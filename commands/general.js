@@ -28,7 +28,7 @@ module.exports = function(id, payload) {
 			"payload": "Not Registered"
 		}]
 
-		let text = "Do you have a valid voter registration from 2011 or 2015? If you have registered before, type Yes, else type No " +
+		let text = "Do you have a valid voter registration from 2011 or 2015?\n\nIf you have registered before, type Yes, else type No " +
 			"for a new registeration."
 		messenger.sendQuickRepliesMessage(id, text, elements, (err, reply) => {
 			if (reply) session.setState(id, "Step 3")
@@ -43,20 +43,20 @@ module.exports = function(id, payload) {
 			webview_height_ratio: "tall",
 			webview_share_button: "hide"
 		}]
-		let text = "Before doing anything, do not forget to check your status here (http://www.inecnigeria.org/?page_id=2160). " +
+		let text = "Before doing anything, do not forget to check your status here http://www.inecnigeria.org/?page_id=2160. " +
 			"This will give you the most accurate information on your voting status and save you time at your local INEC office."
 
 		messenger.sendButtonsMessage(id, text, button, () => {
 			let button = [{
-				"content_type": "text",
-				"title": "Register", 
-				"payload": "Not Registered"
+				type: "postback",
+				title: "New Registeration", 
+				payload: "Not Registered"
 			}]
-			let text = "If you could not find your details, go and register IMMEDIATELY. To check how and where to register	click here."
+			let text = "If you could not find your details, go and register IMMEDIATELY. To check how and where to register	click below."
 			messenger.sendButtonsMessage(id, text, button, () => {
 				let text = "If your status is VALID, go and pick up your Permanent Voters Card (PVC) at your Local Government Secretariat " +
 					"before December 18th, 2018.\n\nTo check the location of your Local Government Secretariat where you can pick up your " +
-					"Permanent Voters Card, click here. (https://www.inecnigeria.org/?page_id=5217)"
+					"Permanent Voters Card, click here. https://www.inecnigeria.org/?page_id=5217"
 				let button = [{
 					type: "web_url",
 					url: "https://www.inecnigeria.org/?page_id=5217",
@@ -67,16 +67,16 @@ module.exports = function(id, payload) {
 				messenger.sendButtonsMessage(id, text, button, () => {
 					let text = "If you have moved house since 2015 you can move your registration to your new location. Find out here."
 					let button = [{
-						"content_type": "text",
-						"title": "Moved Houses", 
-						"payload": "Moved Houses"
+						type: "postback",
+						title: "Moved House", 
+						payload: "Moved Houses"
 					}]
 					messenger.sendButtonsMessage(id, text, button, () => {
 						let text = "If you lost your Permanent Voters Card (PVC) from 2015, click here."
 						let button = [{
-							"content_type": "text",
-							"title": "Lost PVC", 
-							"payload": "Lost PVC"
+							type: "postback",
+							title: "Lost PVC", 
+							payload: "Lost PVC"
 						}]
 						messenger.sendButtonsMessage(id, text, button)
 					})
@@ -90,8 +90,8 @@ module.exports = function(id, payload) {
 		messenger.sendTextMessage(id, text, () => {
 			messenger.sendTextMessage(id, "Write a letter to INEC's Resident Commissioner in the state you live.", () => {
 				messenger.sendFileMessage(id, "https://govote.ng/downloads/SampleTransferLetter.docx", () => {
-					messenger.sendTextMessage(id, "☝🏾 Above is a sample letter you can use. Attach your Voter's Card to the letter, and " +
-						"to avoid stories that touch, make a photocopy of the letter and your voter's card.", () => {
+					messenger.sendTextMessage(id, "☝🏾 Above is a sample letter you can use. Attach your Voter's Card to the letter. " +
+						"To avoid stories that touch, make a photocopy of the letter and your voter's card.", () => {
 						
 						let button = [{
 							type: "web_url",

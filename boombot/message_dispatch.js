@@ -18,7 +18,7 @@ function defaultText(id, message) {
   // this is a very simple logic 
   if (message.length < 5) commands.start(id)
   else {
-    messenger.sendTextMessage(id, "I will forward your message to someone who can assist you. You will get a response shortly.")
+    messenger.sendTextMessage(id, "I will forward your message to someone who can assist you. You can also type 'start' to begin again.")
     messenger.passThreadControl(id, "263902037430900")
   }
 }
@@ -33,7 +33,7 @@ function attachmentsHandler(id, attachments, state) {
 } 
 
 function messageTextHandler(id, message, nlp, state) {
-  if (message.toLowerCase() === "get started") commands.start(id)
+  if (message.toLowerCase() === "get started" || message.toLowerCase() === "start") commands.start(id)
   
   else if (state === "Step 1") commands.general(id, "What is a PVC")
   else if (state === "Step 2") commands.general(id, "Get your PVC")
