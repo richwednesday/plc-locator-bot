@@ -139,6 +139,9 @@ module.exports = function(id, payload) {
 		session.setState(id, "Step 4")
 	}
 
+	else if (payload === "Contribute") {
+		messenger.sendTextMessage(id, "You can contribute by sharing this bot with your friends.")
+	}
 }
 
 

@@ -20,6 +20,7 @@ function PostbackFilter(id, payload) {
 		case "Not Registered":
 		case "Moved Houses":
 		case "Lost PVC":
+		case "Contribute":
 			commands.general(id, payload)
 			break; 
 
