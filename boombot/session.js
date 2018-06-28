@@ -37,6 +37,7 @@ module.exports = {
 
 	delete(id) {
 		client.del(`${id}-store`)
+		client.set(id, "Free")
 	},
 
 	getResponse(intent, cb) {
