@@ -7,7 +7,7 @@ client.on('connect', () => console.log('Connected to Redis'))
 
 module.exports = {
 	setState(id, value) {
-		client.set(id, value)
+		client.set(id, value, 'EX', 4000,)
 	},
 
 	getState(id, cb) {

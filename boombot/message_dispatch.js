@@ -40,7 +40,7 @@ function messageTextHandler(id, message, nlp, state) {
   else if (state === "Step 3") {
     if (yesReplies.indexOf(message) >= 0) commands.general(id, "Yes Registered")
     else if (noReplies.indexOf(message) >= 0) commands.general(id, "Not Registered")
-    else messenger.sendTextMessage(id, "Type Get started to begin again.") 
+    else messenger.sendTextMessage(id, "Type 'start' to begin again.") 
   }
 
   else if (nlp.states && state === "Step 4") commands.search(id, "Location as State", nlp.states) 
