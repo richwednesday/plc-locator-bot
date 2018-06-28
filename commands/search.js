@@ -90,21 +90,7 @@ function main(id, payload, details) {
       if (!res) return messenger.sendTextMessage(id, "Sorry, I could not find more data.")
       console.log(res)
 
-      let elements = []
-      for (let location of res.locations) {
-        elements.push({
-          title: location.reg_area,
-          subtitle: location.reg_area_centre + "\nClick Contribute below to provide the address of this location.",
-          image_url: "http://res.cloudinary.com/ubadj/image/upload/v1529652086/050AD750-ABBF-4AB0-A5AA-43BA06C87601.jpg",
-          buttons: [{
-            type: "postback",
-            title: "Contribute",
-            payload: "Contribute"
-          }]
-        })
-        if (elements.length === 10) break;
-      }
-      messenger.sendHScrollMessage(id, elements)
+      util.sendScrollMessage(id, res)
       session.delete(id)
     })
   }
@@ -117,7 +103,7 @@ let util = {
     for (let location of locations) {
       elements.push({
         title: location.reg_area,
-        subtitle: location.reg_area_centre,
+        subtitle: location.reg_area_centre + "\nClick Contribute below to provide the address of this location.",
         image_url: "http://res.cloudinary.com/ubadj/image/upload/v1529652086/050AD750-ABBF-4AB0-A5AA-43BA06C87601.jpg",
         buttons: [{
           type: "postback",

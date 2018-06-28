@@ -7,9 +7,9 @@ const Boombot = require('./boombot/boombot')
 
 // Enable "Get Started" button, greeting and persistent menu for your bot
 // Can uncomment this code to set it
-Boombot.BotProfile.enableGetStarted()
-Boombot.BotProfile.setGreeting()
-Boombot.PersistentMenu.enable()
+// Boombot.BotProfile.enableGetStarted()
+// Boombot.BotProfile.setGreeting()
+// Boombot.PersistentMenu.enable()
 
 // Webserver parameter
 const PORT = process.env.PORT
