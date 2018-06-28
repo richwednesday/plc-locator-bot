@@ -83,6 +83,7 @@ module.exports = function(id, payload) {
 				})
 			})
 		})
+		session.setState(id, "Out of Step")
 	}
 
 	else if (payload === "Moved Houses") {
@@ -109,16 +110,17 @@ module.exports = function(id, payload) {
 
 	else if (payload === "Lost PVC") {
 		let text = "If your TVC/PVC is lost or damaged, take a photo ID and a passport photograph to INEC’s office in your local government."
-		let button = [{
-			type: "web_url",
-			url: "https://www.inecnigeria.org/?page_id=5217",
-			title: "Find INEC Office",
-			webview_height_ratio: "tall",
-			webview_share_button: "hide"
-		}]
-		messenger.sendButtonsMessage(id, text, button, () => {
+		messenger.sendTextMessage(id, text, () => {
 			messenger.sendTextMessage(id, "It's best to do this 30 days before there's an election in your constituency.", () => {
-				messenger.sendTextMessage(id, "INEC replaces lost, defaced and mutilated cards FREE OF CHARGE")
+				let button = [{
+					type: "web_url",
+					url: "https://www.inecnigeria.org/?page_id=5217",
+					title: "Find INEC Office",
+					webview_height_ratio: "tall",
+					webview_share_button: "hide"
+				}]
+
+				messenger.sendButtonsMessage(id, "INEC replaces lost, defaced and mutilated cards FREE OF CHARGE", button)
 			})
 		})
 	}
