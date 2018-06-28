@@ -39,7 +39,8 @@ module.exports = {
 		client.del(`${id}-store`)
 	},
 
-	getResponse(intent) {
+	getResponse(intent, cb) {
+		console.log("Intent is ", intent)
 		client.get(intent, (err, reply) => {
 			if (err) {
 				console.log(err)

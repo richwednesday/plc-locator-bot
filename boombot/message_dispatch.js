@@ -16,7 +16,7 @@ function defaultText(id, message) {
   console.log("default text")
 
   // this is a very simple logic 
-  if (message.length < 5) commands.start(id)
+  if (message.length < 7) commands.start(id)
   else {
     messenger.sendTextMessage(id, "I will forward your message to someone who can assist you. You can also type 'start' to begin again.")
     // messenger.passThreadControl(id, "263902037430900")
