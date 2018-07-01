@@ -29,7 +29,7 @@ function attachmentsHandler(id, attachments, state) {
   else if (state === "Step 1") commands.general(id, "What is a PVC")
   else if (state === "Step 2") commands.general(id, "Get your PVC")
   else if (state === "Expecting Feedback") commands.feedback(id, "Received Feedback")
-  else defaultText(id)
+  else messenger.sendTextMessage(id, "❤️")
 } 
 
 function messageTextHandler(id, message, nlp, state) {

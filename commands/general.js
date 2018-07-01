@@ -142,7 +142,8 @@ module.exports = function(id, payload) {
 	}
 
 	else if (payload === "Contribute") {
-		messenger.sendTextMessage(id, "You can contribute by sharing this bot with your friends.")
+		let button = [{ type: "element_share" }]
+		messenger.sendButtonsMessage(id, "You can contribute by sharing this bot with your friends.", button)
 	}
 }
 
